@@ -1,6 +1,6 @@
 # Demonstrating the 'poisson_odds'
 
-![Demo 1](https://github.com/nikolaitolmachev/xgnhl/raw/main/Img/screen_0.jpg)
+![Demo 1](https://github.com/nikolaitolmachev/poisson_odds_demo/blob/master/Img/screen_0.jpg?raw=true)
 
 This console application showcases the [poisson_odds](https://github.com/nikolaitolmachev/poisson_odds) library, which calculates probabilities for NHL matches using the Poisson distribution. The application enables comparison of these probabilities with real-world odds from bookmakers to assess potential betting value. Key features include:
 1. **Probability calculations based on xG**: Using the 'poisson_odds' library, probability calculations are performed for moneyline and handicap/total lines for each game based on the expected goals of the teams obtained from a [source](https://www.naturalstattrick.com/teamtable.php?sit=5v5&score=all&rate=y&team=all&loc=). xG serves as a metric for team quality.
@@ -8,7 +8,7 @@ This console application showcases the [poisson_odds](https://github.com/nikolai
 3. **Comprasion and Analysis**: Comparing probabilities calculated based on the Poisson distribution with probabilities derived from bookmaker odds. This allows for identifying situations where the model suggests a higher probability of an outcome than assessed by the bookmaker, which may indicate a "value bet."
 4. **Console Interface**: A simple and intuitive console interface for input, probability calculation, and result comparison.
 
-![Demo 2](https://github.com/nikolaitolmachev/xgnhl/raw/main/Img/screen_1.jpg)
+![Demo 2](https://github.com/nikolaitolmachev/poisson_odds_demo/blob/master/Img/screen_1.jpg?raw=true)
 
 ## How to install ?
 Python 3.10 is required to run this application.
