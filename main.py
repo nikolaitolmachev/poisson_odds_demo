@@ -18,6 +18,10 @@ def set_xGs(PROXY='no') -> tuple:
     :param PROXY: use proxy to get xG data or no.
     """
 
+    def replace_key(dictionary, old_key, new_key):
+        if old_key in dictionary:
+            dictionary[new_key] = dictionary.pop(old_key)
+
     # get xG data for all teams at home
     # get xG data for all teams in away
     asession = AsyncHTMLSession()
@@ -30,6 +34,12 @@ def set_xGs(PROXY='no') -> tuple:
     global XG_ALL_HOME, XG_ALL_AWAY
     XG_ALL_HOME = results[0]
     XG_ALL_AWAY = results[1]
+
+    # replace mismatched team names
+    replace_key(XG_ALL_HOME, 'Utah Hockey Club', 'Utah')
+    replace_key(XG_ALL_AWAY, 'Utah Hockey Club', 'Utah')
+    replace_key(XG_ALL_HOME, 'St Louis Blues', 'St. Louis Blues')
+    replace_key(XG_ALL_AWAY, 'St Louis Blues', 'St. Louis Blues')
 
 def analyze_all_matches():
     """
