@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source ./Scripts/activate
+
 if ! command -v pyinstaller &> /dev/null; then
   echo "PyInstaller is not installed. Please install it."
   sleep 8
