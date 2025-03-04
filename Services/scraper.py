@@ -100,9 +100,10 @@ class Scraper:
                                                        int(match_date_day.split('.')[1].strip()),
                                                        int(match_date_day.split('.')[0].strip()),
                                                        int(match_date_time.split(':')[0].strip()),
-                                                       int(match_date_time.split(':')[1].strip()))
+                                                       int(match_date_time.split(':')[1].strip())).strftime(
+                                                                                                    "%Y-%m-%d %H:%M")
         except IndexError:
-            match_date_to_datetime = datetime.datetime.now()
+            match_date_to_datetime = datetime.datetime.now().replace(second=0, microsecond=0).strftime("%Y-%m-%d %H:%M")
 
         # get moneyline
         bookmaker_moneyline = None

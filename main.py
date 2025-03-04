@@ -177,3 +177,4 @@ if __name__ == '__main__':
         main()
     except Exception as ex:
         print('Something is going wrong: ' + str(ex))
+    input('Press any button to exit...')
