@@ -3,3 +3,7 @@ Scripts
 pyvenv.cfg
 .idea
 **/__pycache__/
+/build
+/dist
+/xGNHL.spec
+/xGNHL.exe
