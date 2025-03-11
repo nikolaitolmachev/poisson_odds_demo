@@ -7,7 +7,7 @@ XG_SITE_NHL = 'https://www.naturalstattrick.com/teamtable.php?sit=5v5&score=all&
 USER_AGENT_SHORT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36'
 USER_AGENT_FULL = 'User-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36'
 
-NEEDED_BOOKIES = ('Pinnacle', )
+NEEDED_BOOKIES = ('Pinnacle', '1xBet', 'BetVictor')
 MINIMAL_ODDS_TO_GET_LINE = 1.50
 
 FILE_STATS = 'stats.txt'

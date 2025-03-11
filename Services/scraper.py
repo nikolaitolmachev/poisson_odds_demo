@@ -106,15 +106,23 @@ class Scraper:
             match_date_to_datetime = datetime.datetime.now().replace(second=0, microsecond=0).strftime("%Y-%m-%d %H:%M")
 
         # get moneyline
+        bookmaker_moneylines = {}
         bookmaker_moneyline = None
+
         od = driver.find_elements(By.XPATH, './/table[@class="table-main sortable h-mb15"]/tbody/tr[@data-originid="1"]')
         for odds_row in od:
             bookmaker = odds_row.find_element(By.XPATH, './/td[@class="h-text-left over-s-only"]/a').text
-            if bookmaker in consts.NEEDED_BOOKIES:
-                home_odds = float(odds_row.find_element(By.XPATH, './/td[last()-2]').get_attribute('data-odd'))
-                draw_odds = float(odds_row.find_element(By.XPATH, './/td[last()-1]').get_attribute('data-odd'))
-                away_odds = float(odds_row.find_element(By.XPATH, './/td[last()]').get_attribute('data-odd'))
-                bookmaker_moneyline = BookmakerMoneyline(home_odds, draw_odds, away_odds)
+
+            home_odds = float(odds_row.find_element(By.XPATH, './/td[last()-2]').get_attribute('data-odd'))
+            draw_odds = float(odds_row.find_element(By.XPATH, './/td[last()-1]').get_attribute('data-odd'))
+            away_odds = float(odds_row.find_element(By.XPATH, './/td[last()]').get_attribute('data-odd'))
+            bookmaker_moneyline = BookmakerMoneyline(home_odds, draw_odds, away_odds)
+
+            bookmaker_moneylines[bookmaker] = bookmaker_moneyline
+
+        for need_book in consts.NEEDED_BOOKIES:
+            if bookmaker_moneylines.get(need_book) is not None:
+                bookmaker_moneyline = bookmaker_moneylines.get(need_book)
                 break
 
         nhl_match = NHLMatch(match_date_to_datetime, team_a, team_b, url, bookmaker_moneyline)
@@ -201,7 +209,9 @@ class Scraper:
         :return: List of bookmaker totals.
         """
 
-        totals = []
+        totals = {}
+        list_of_totals = []
+
         url += consts.SUFFIX_FOR_TOTALS if url[-1] == '/' else '/' + consts.SUFFIX_FOR_TOTALS
 
         driver = Scraper.__create_driver()
@@ -225,12 +235,25 @@ class Scraper:
                     if odds_over < consts.MINIMAL_ODDS_TO_GET_LINE or odds_under < consts.MINIMAL_ODDS_TO_GET_LINE:
                         continue
                     book_total = BookmakerTotal(total_line, odds_over, odds_under)
-                    totals.append(book_total)
-                    break
+
+                    if totals.get(bookmaker) is None:
+                        totals[bookmaker] = []
+                    totals[bookmaker].append(book_total)
+
+        lines = []
+        for need_book in consts.NEEDED_BOOKIES:
+            current_book = totals.get(need_book)
+            if current_book is not None:
+                for cb in current_book:
+                    if cb.line in lines:
+                        continue
+                    else:
+                        list_of_totals.append(cb)
+                        lines.append(cb.line)
 
         driver.quit()
 
-        return totals
+        return sorted(list_of_totals)
 
     @staticmethod
     async def get_bookmaker_handicaps_async(url: str, session: ClientSession) -> list:
@@ -289,7 +312,9 @@ class Scraper:
         :return: List of bookmaker handicaps.
         """
 
-        handicaps = []
+        handicaps = {}
+        list_of_handicaps = []
+
         url += consts.SUFFIX_FOR_HANDICAPS if url[-1] == '/' else '/' + consts.SUFFIX_FOR_HANDICAPS
 
         driver = Scraper.__create_driver()
@@ -307,15 +332,27 @@ class Scraper:
 
             for row in rows:
                 bookmaker = row.find_element(By.XPATH, './/td[@class="h-text-left over-s-only"]/a').text
-                if bookmaker in consts.NEEDED_BOOKIES:
-                    odds_home = float(row.find_element(By.XPATH, './/td[last()-1]').get_attribute('data-odd'))
-                    odds_away = float(row.find_element(By.XPATH, './/td[last()]').get_attribute('data-odd'))
-                    if odds_home < consts.MINIMAL_ODDS_TO_GET_LINE or odds_away < consts.MINIMAL_ODDS_TO_GET_LINE:
+
+                odds_home = float(row.find_element(By.XPATH, './/td[last()-1]').get_attribute('data-odd'))
+                odds_away = float(row.find_element(By.XPATH, './/td[last()]').get_attribute('data-odd'))
+                if odds_home < consts.MINIMAL_ODDS_TO_GET_LINE or odds_away < consts.MINIMAL_ODDS_TO_GET_LINE:
+                    continue
+                book_handicap = BookmakerHandicap(handicap_line, odds_home, odds_away)
+                if handicaps.get(bookmaker) is None:
+                    handicaps[bookmaker] = []
+                handicaps[bookmaker].append(book_handicap)
+
+        lines = []
+        for need_book in consts.NEEDED_BOOKIES:
+            current_book = handicaps.get(need_book)
+            if current_book is not None:
+                for cb in current_book:
+                    if cb.line in lines:
                         continue
-                    book_handicap = BookmakerHandicap(handicap_line, odds_home, odds_away)
-                    handicaps.append(book_handicap)
-                    break
+                    else:
+                        list_of_handicaps.append(cb)
+                        lines.append(cb.line)
 
         driver.quit()
 
-        return handicaps
+        return sorted(list_of_handicaps)
